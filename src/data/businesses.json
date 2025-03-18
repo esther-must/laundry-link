@@ -1,0 +1,17 @@
+[
+    {
+      "id": 1,
+      "name": "Sparkle Laundry",
+      "location": "Lagos",
+      "services": ["Dry Cleaning", "Ironing"],
+      "price": "₦500 - ₦2000"
+    },
+    {
+      "id": 2,
+      "name": "Fresh Wash",
+      "location": "Abuja",
+      "services": ["Washing", "Folding"],
+      "price": "₦300 - ₦1500"
+    }
+]
+  
