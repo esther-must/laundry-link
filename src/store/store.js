@@ -1,18 +1,48 @@
 import { create } from "zustand";
-import businesses from "../data/businesses.json";
 
 const useStore = create((set, get) => ({
-  businesses, // Original business list
+  businesses: [], // Start with an empty list
+  bookings: [],
   searchQuery: "",
   selectedCategory: "All",
   sortOption: "name-asc", // Default sorting
+  isLoading: false,
 
   setSearchQuery: (query) => set({ searchQuery: query }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
   setSortOption: (option) => set({ sortOption: option }),
 
+  fetchBusinesses: async () => {
+    set({ isLoading: true });
+    try {
+      const response = await fetch("http://localhost:5000/businesses");
+      const data = await response.json();
+      set({ businesses: data, isLoading: false });
+    } catch (error) {
+      console.error("Error fetching businesses:", error);
+      set({ businesses: [] });
+    }
+  },
+
+  addBooking: async (booking) => {
+    try {
+      const response = await fetch("http://localhost:5000/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(booking),
+      });
+      if (response.ok) {
+        const newBooking = await response.json();
+        set((state) => ({ bookings: [...state.bookings, newBooking] }));
+      }
+    } catch (error) {
+      console.error("Error adding booking:", error);
+      set({ bookings: [] });
+    }
+  },
+
   getFilteredBusinesses: () => {
-    const { businesses, searchQuery, selectedCategory, sortOption } = get(); // ✅ Use get() correctly
+    const { businesses, searchQuery, selectedCategory, sortOption } = get();
 
     let filtered = businesses.filter((business) => {
       const matchesSearch = business.name

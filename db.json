@@ -1,0 +1,38 @@
+{
+    "businesses": [
+      {
+        "id": 1,
+        "name": "Sparkle Laundry",
+        "location": "Lagos",
+        "price": "₦5,000 - ₦15,000",
+        "services": ["Dry Cleaning", "Ironing"],
+        "ratings": 4.5
+      },
+      {
+        "id": 2,
+        "name": "Fresh Press",
+        "location": "Abuja",
+        "price": "₦3,000 - ₦10,000",
+        "services": ["Ironing", "Stain Removal"],
+        "ratings": 4.0
+      },
+      {
+        "id": 3,
+        "name": "Sparkle Cleaners",
+        "location": "Ikeja, Lagos",
+        "price": "₦5,000 - ₦15,000",
+        "services": ["Dry Cleaning", "Ironing"],
+        "ratings": 4.0
+      },
+      {
+        "id": 4,
+        "name": "Elite Wash",
+        "location": "Surulere, Lagos",
+        "price": "₦3,000 - ₦10,000",
+        "services": ["Washing", "Folding"],
+        "ratings": 4.5
+      }
+    ],
+    "bookings": []
+}
+  
