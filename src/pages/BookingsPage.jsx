@@ -2,11 +2,15 @@ import { useState, useEffect } from "react";
 
 const BookingsPage = () => {
   const [bookings, setBookings] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   // Fetch bookings from localStorage
   useEffect(() => {
     const storedBookings = JSON.parse(localStorage.getItem("bookings")) || [];
     setBookings(storedBookings);
+
+    const storedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+    setOrders(storedOrders);
   }, []);
 
   // Delete a booking
@@ -14,6 +18,11 @@ const BookingsPage = () => {
     const updatedBookings = bookings.filter((_, i) => i !== index);
     setBookings(updatedBookings);
     localStorage.setItem("bookings", JSON.stringify(updatedBookings));
+  
+    // Remove corresponding order
+    const updatedOrders = orders.filter((_, i) => i !== index);
+    setOrders(updatedOrders);
+    localStorage.setItem("orders", JSON.stringify(updatedOrders));
   };
 
   return (

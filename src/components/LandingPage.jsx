@@ -11,7 +11,7 @@ const LandingPage = () => {
       </Link>
       <Link to="/signin">
         <button className="w-48 py-2 border border-blue-500 text-blue-500 rounded-md shadow-md">
-          Log In
+          Sign In
         </button>
       </Link>
     </div>

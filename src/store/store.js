@@ -3,6 +3,7 @@ import { create } from "zustand";
 const useStore = create((set, get) => ({
   businesses: [], // Start with an empty list
   bookings: [],
+  userOrders: [],
   searchQuery: "",
   selectedCategory: "All",
   sortOption: "name-asc", // Default sorting
@@ -23,6 +24,21 @@ const useStore = create((set, get) => ({
       set({ businesses: [] });
     }
   },
+
+  fetchUserOrders: async () => {
+    try {
+      const response = await fetch("http://localhost:5000/orders"); // Adjust endpoint as needed
+      const data = await response.json();
+      set({ userOrders: data });
+    } catch (error) {
+      console.error("Error fetching user orders:", error);
+      set({ userOrders: [] });
+    }
+  },
+
+  addUserOrder: (newOrder) => set((state) => ({
+    userOrders: [...state.userOrders, newOrder],
+  })),
 
   addBooking: async (booking) => {
     try {

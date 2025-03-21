@@ -1,43 +1,88 @@
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import useStore from "../store/store";
+
+const servicePrices = {
+  "Wash & Fold": 2000,
+  "Ironing": 1500,
+  "Dry Cleaning": 2500,
+};
+const validDiscountCodes = { "SAVE10": 10, "FIRST50": 50 };
 
 const BusinessModal = ({ isOpen, closeModal, business }) => {
-  if (!business) return null; // Prevents errors if business is undefined
+  const addUserOrder = useStore((state) => state.addUserOrder);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [discountCode, setDiscountCode] = useState("");
+  const [discountAmount, setDiscountAmount] = useState(0);
 
-   // Booking Form State
-   const [booking, setBooking] = useState({
+  if (!business) return null;
+
+  const [booking, setBooking] = useState({
     name: "",
     date: "",
     time: "",
     address: "",
+    service: "Wash & Fold",
     notes: "",
+    price: servicePrices["Wash & Fold"],
   });
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  // Handle Form Input Change
   const handleChange = (e) => {
-    setBooking({ ...booking, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setBooking((prev) => ({
+      ...prev,
+      [name]: value,
+      price: name === "service" ? servicePrices[value] - discountAmount : prev.price,
+    }));
   };
 
-  // Handle Form Submission
-  const handleSubmit = (e) => {
+  const applyDiscount = () => {
+    if (validDiscountCodes[discountCode]) {
+      setDiscountAmount(validDiscountCodes[discountCode]);
+      setBooking((prev) => ({
+        ...prev,
+        price: servicePrices[prev.service] - validDiscountCodes[discountCode],
+      }));
+    } else {
+      alert("Invalid discount code");
+      setDiscountAmount(0);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!booking.name || !booking.date || !booking.time || !booking.address) {
+      alert("Please fill in all required fields.");
+      return;
+    }
 
-    // Simulating saving to localStorage (Replace with API call later)
-    const bookings = JSON.parse(localStorage.getItem("bookings")) || [];
-    localStorage.setItem("bookings", JSON.stringify([...bookings, booking]));
+    const newOrder = {
+      id: Date.now(),
+      service: business.name,
+      customer: booking.name,
+      date: booking.date,
+      time: booking.time,
+      address: booking.address,
+      notes: booking.notes,
+      price: booking.price,
+      status: "Pending",
+    };
 
-    // Show confirmation message
-    setIsSubmitted(true);
-    
-    // Reset form after submission
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setBooking({ name: "", date: "", time: "", address: "", notes: "" });
-      closeModal();
-    }, 2000);
+    addUserOrder(newOrder);
+    localStorage.setItem("bookings", JSON.stringify([...JSON.parse(localStorage.getItem("bookings")) || [], newOrder]));
+
+    try {
+      const response = await fetch("http://localhost:5000/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newOrder),
+      });
+      if (!response.ok) throw new Error("Failed to save order");
+      setIsSubmitted(true);
+      setTimeout(() => { setIsSubmitted(false); closeModal(); }, 2000);
+    } catch (error) {
+      alert("Booking failed. Please try again.");
+    }
   };
 
   return (
@@ -45,117 +90,38 @@ const BusinessModal = ({ isOpen, closeModal, business }) => {
       <Dialog as="div" className="relative z-50" onClose={closeModal}>
         <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center p-4">
           <Dialog.Panel className="w-full max-w-lg bg-white rounded-lg shadow-lg p-6">
-            {/* Modal Header */}
-            <Dialog.Title className="text-2xl font-bold">
-              {business.name}
-            </Dialog.Title>
-
-            {/* Business Image */}
-            <img
-              src={business.image || "https://via.placeholder.com/300"}
-              alt={business.name}
-              className="w-full h-56 object-cover rounded-md mt-4"
-            />
-
-            {/* Business Details */}
+            <Dialog.Title className="text-2xl font-bold">{business.name}</Dialog.Title>
+            <img src={business.image || "https://via.placeholder.com/300"} alt={business.name} className="w-full h-56 object-cover rounded-md mt-4" />
             <div className="mt-4">
               <p className="text-gray-600">{business.description}</p>
-              <p className="mt-2 text-gray-700">
-                <strong>Services:</strong> {business.services.join(", ")}
-              </p>
-              <p className="mt-2 text-gray-700">
-                <strong>Location:</strong> {business.location}
-              </p>
-              <p className="mt-2 text-yellow-500">
-                <strong>⭐ Rating:</strong> {business.rating || "N/A"}
-              </p>
-              <p className="mt-2 text-gray-700">
-                <strong>Price:</strong> ₦{business.price}
-              </p>
+              <p className="mt-2 text-gray-700"><strong>Services:</strong> {business.services?.join(", ") || "N/A"}</p>
+              <p className="mt-2 text-gray-700"><strong>Location:</strong> {business.location || "Not available"}</p>
             </div>
-
-             {/* Booking Form */}
-             <div className="mt-6 border-t pt-4">
+            <div className="mt-6 border-t pt-4">
               <h3 className="text-lg font-semibold">Request a Pickup</h3>
-
               {isSubmitted ? (
-                <p className="text-green-600 font-bold mt-2">
-                  ✅ Booking successful! We'll contact you soon.
-                </p>
+                <p className="text-green-600 font-bold mt-2">✅ Booking successful!</p>
               ) : (
                 <form onSubmit={handleSubmit} className="mt-3 space-y-3">
-                  
-                  {/* Name */}
-                  <input
-                    type="text"
-                    name="name"
-                    value={booking.name}
-                    onChange={handleChange}
-                    placeholder="Your Name"
-                    required
-                    className="w-full p-2 border rounded-md"
-                  />
-
-                  {/* Date & Time */}
+                  <input type="text" name="name" value={booking.name} onChange={handleChange} placeholder="Your Name" required className="w-full p-2 border rounded-md" />
                   <div className="flex gap-2">
-                    <input
-                      type="date"
-                      name="date"
-                      value={booking.date}
-                      onChange={handleChange}
-                      required
-                      className="w-1/2 p-2 border rounded-md"
-                    />
-                    <input
-                      type="time"
-                      name="time"
-                      value={booking.time}
-                      onChange={handleChange}
-                      required
-                      className="w-1/2 p-2 border rounded-md"
-                    />
+                    <input type="date" name="date" value={booking.date} onChange={handleChange} required className="w-1/2 p-2 border rounded-md" />
+                    <input type="time" name="time" value={booking.time} onChange={handleChange} required className="w-1/2 p-2 border rounded-md" />
                   </div>
-
-                  {/* Address */}
-                  <input
-                    type="text"
-                    name="address"
-                    value={booking.address}
-                    onChange={handleChange}
-                    placeholder="Pickup Address"
-                    required
-                    className="w-full p-2 border rounded-md"
-                  />
-
-                  {/* Additional Notes */}
-                  <textarea
-                    name="notes"
-                    value={booking.notes}
-                    onChange={handleChange}
-                    placeholder="Any additional notes..."
-                    rows="3"
-                    className="w-full p-2 border rounded-md"
-                  ></textarea>
-
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition"
-                  >
-                    Submit Request
-                  </button>
+                  <input type="text" name="address" value={booking.address} onChange={handleChange} placeholder="Pickup Address" required className="w-full p-2 border rounded-md" />
+                  <label className="block font-medium">Select Service:</label>
+                  <select name="service" value={booking.service} onChange={handleChange} className="w-full p-2 border rounded-md">
+                    {Object.keys(servicePrices).map(service => <option key={service} value={service}>{service}</option>)}
+                  </select>
+                  <input type="text" value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} placeholder="Enter discount code" className="w-full p-2 border rounded-md" />
+                  <button type="button" onClick={applyDiscount} className="bg-blue-500 text-white py-1 px-3 rounded-md">Apply Discount</button>
+                  <p className="mt-2 text-gray-700 font-semibold">Total Price: <span className="text-green-600">₦{booking.price}</span></p>
+                  <button type="submit" className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600">Submit Request</button>
                 </form>
               )}
             </div>
-
-            {/* Close Button */}
             <div className="mt-6 flex justify-end">
-              <button
-                onClick={closeModal}
-                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-              >
-                Close
-              </button>
+              <button onClick={closeModal} className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Close</button>
             </div>
           </Dialog.Panel>
         </div>

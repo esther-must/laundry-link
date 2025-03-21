@@ -1,38 +1,115 @@
 {
-    "businesses": [
-      {
-        "id": 1,
-        "name": "Sparkle Laundry",
-        "location": "Lagos",
-        "price": "₦5,000 - ₦15,000",
-        "services": ["Dry Cleaning", "Ironing"],
-        "ratings": 4.5
-      },
-      {
-        "id": 2,
-        "name": "Fresh Press",
-        "location": "Abuja",
-        "price": "₦3,000 - ₦10,000",
-        "services": ["Ironing", "Stain Removal"],
-        "ratings": 4.0
-      },
-      {
-        "id": 3,
-        "name": "Sparkle Cleaners",
-        "location": "Ikeja, Lagos",
-        "price": "₦5,000 - ₦15,000",
-        "services": ["Dry Cleaning", "Ironing"],
-        "ratings": 4.0
-      },
-      {
-        "id": 4,
-        "name": "Elite Wash",
-        "location": "Surulere, Lagos",
-        "price": "₦3,000 - ₦10,000",
-        "services": ["Washing", "Folding"],
-        "ratings": 4.5
-      }
-    ],
-    "bookings": []
+  "businesses": [
+    {
+      "id": 1,
+      "name": "Sparkle Laundry",
+      "location": "Lagos",
+      "price": "₦5,000 - ₦15,000",
+      "services": [
+        "Dry Cleaning",
+        "Ironing"
+      ],
+      "ratings": 4.5
+    },
+    {
+      "id": 2,
+      "name": "Fresh Press",
+      "location": "Abuja",
+      "price": "₦3,000 - ₦10,000",
+      "services": [
+        "Ironing",
+        "Stain Removal"
+      ],
+      "ratings": 4
+    },
+    {
+      "id": 3,
+      "name": "Sparkle Cleaners",
+      "location": "Ikeja, Lagos",
+      "price": "₦5,000 - ₦15,000",
+      "services": [
+        "Dry Cleaning",
+        "Ironing"
+      ],
+      "ratings": 4
+    },
+    {
+      "id": 4,
+      "name": "Elite Wash",
+      "location": "Surulere, Lagos",
+      "price": "₦3,000 - ₦10,000",
+      "services": [
+        "Washing",
+        "Folding"
+      ],
+      "ratings": 4.5
+    }
+  ],
+  "bookings": [],
+  "orders": [
+    {
+      "id": 1,
+      "userId": 101,
+      "businessId": 1,
+      "status": "In Progress",
+      "items": [
+        "Dry Cleaning",
+        "Ironing"
+      ],
+      "totalPrice": "₦10,000",
+      "date": "2025-03-10"
+    },
+    {
+      "id": 2,
+      "userId": 102,
+      "businessId": 2,
+      "status": "Delivered",
+      "items": [
+        "Ironing"
+      ],
+      "totalPrice": "₦3,000",
+      "date": "2025-03-08"
+    },
+    {
+      "id": 1742582877709,
+      "service": "Elite Wash",
+      "customer": "Esther",
+      "date": "2025-03-22",
+      "time": "21:49",
+      "address": "idi aba",
+      "notes": "",
+      "status": "Pending"
+    },
+    {
+      "id": 1742583745136,
+      "service": "Elite Wash",
+      "customer": "Esther MUSTAPHA",
+      "date": "2025-03-22",
+      "time": "20:01",
+      "address": "tekobo",
+      "notes": "",
+      "status": "Pending"
+    },
+    {
+      "id": 1742584668561,
+      "service": "Elite Wash",
+      "customer": "Esther MUSTAPHA",
+      "date": "2025-03-22",
+      "time": "20:18",
+      "address": "idi aba",
+      "notes": "",
+      "status": "Pending"
+    },
+    {
+      "id": 1742585026268,
+      "service": "Elite Wash",
+      "customer": "dainty",
+      "date": "2025-03-21",
+      "time": "20:24",
+      "address": "idi aba",
+      "notes": "",
+      "price": 2000,
+      "status": "Pending"
+    }
+  ]
 }
-  
