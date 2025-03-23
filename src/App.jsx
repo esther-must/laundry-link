@@ -3,6 +3,7 @@ import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import Home from "./pages/Home";
 import BookingsPage from "./pages/BookingsPage";
+import OrderTracking from "./pages/OrderTracking";
 import SplashScreen from "./components/SplashScreen";
 import LandingPage from "./components/LandingPage";
 import Onboarding from "./components/Onboarding";
@@ -23,9 +24,10 @@ function App() {
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/signup" element={<SignUp />} />
-         <Route path="/signin" element={<SignIn />} />
+          <Route path="/signin" element={<SignIn />} />
           <Route path="/home" element={<Home />} />
           <Route path="/bookings" element={<BookingsPage />} />
+          <Route path="/track-order/:orderId" element={<OrderTracking />} />
         </Routes>
       </div>
     </Router>
