@@ -25,7 +25,7 @@ const BusinessCard = ({ business }) => {
             <span className="text-yellow-500 text-lg font-bold">
               ⭐ {business.rating || "N/A"}
             </span>
-            <span className="text-gray-700 font-semibold">₦{business.price}</span>
+            <span className="text-gray-700 font-semibold">{business.price}</span>
           </div>
 
           {/* Open Modal Button */}

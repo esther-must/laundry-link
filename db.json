@@ -43,6 +43,62 @@
         "Folding"
       ],
       "ratings": 4.5
+    },
+    {
+      "id": 6,
+      "name": "Perfect Shine",
+      "location": "Kano",
+      "price": "₦4,000 - ₦12,000",
+      "services": ["Ironing", "Express Service"],
+      "ratings": 4.2
+    },
+    {
+      "id": 7,
+      "name": "Swift Wash",
+      "location": "Ibadan",
+      "price": "₦2,500 - ₦8,000",
+      "services": ["Washing", "Shoe Cleaning"],
+      "ratings": 4
+    },
+    {
+      "id": 8,
+      "name": "Fresh Look Laundry",
+      "location": "Enugu",
+      "price": "₦5,500 - ₦16,000",
+      "services": ["Dry Cleaning", "Folding"],
+      "ratings": 4.3
+    },
+    {
+      "id": 9,
+      "name": "Diamond Cleaners",
+      "location": "Abeokuta",
+      "price": "₦3,500 - ₦11,000",
+      "services": ["Ironing", "Shoe Cleaning"],
+      "ratings": 4.1
+    },
+    {
+      "id": 10,
+      "name": "Neat & Tidy",
+      "location": "Benin City",
+      "price": "₦4,500 - ₦14,000",
+      "services": ["Washing", "Dry Cleaning"],
+      "ratings": 4.4
+    },
+    {
+      "id": 11,
+      "name": "Prime Wash",
+      "location": "Kaduna",
+      "price": "₦3,000 - ₦9,000",
+      "services": ["Ironing", "Express Service"],
+      "ratings": 4.2
+    },
+    {
+      "id": 12,
+      "name": "Executive Laundry",
+      "location": "Jos",
+      "price": "₦6,500 - ₦18,000",
+      "services": ["Dry Cleaning", "Carpet Cleaning", "Ironing"],
+      "ratings": 4.6
     }
   ],
   "bookings": [],
@@ -110,6 +166,29 @@
       "notes": "",
       "price": 2000,
       "status": "Pending"
+    },
+    {
+      "id": 1742902475166,
+      "service": "Elite Wash",
+      "customer": "Esther MUSTAPHA",
+      "date": "2025-03-26",
+      "time": "13:34",
+      "address": "3, Femi Oridate Street, Tekobo, Idi Aba",
+      "notes": "",
+      "price": 2000,
+      "status": "Pending"
     }
+  ],
+  "products": [
+    { "id": 1, "name": "T-Shirt", "price": 3000, "quantity": 1, "img": "/tshirt.png" },
+    { "id": 2, "name": "Shirt", "price": 6000, "quantity": 1, "img": "/shirt.png" },
+    { "id": 3, "name": "Jeans", "price": 7000, "quantity": 1, "img": "/jeans.png" },
+    { "id": 4, "name": "Jacket", "price": 15000, "quantity": 1, "img": "/jacket.png" },
+    { "id": 5, "name": "Sneakers", "price": 25000, "quantity": 1, "img": "/sneakers.png" },
+    { "id": 6, "name": "Socks", "price": 1500, "quantity": 1, "img": "/socks.png" },
+    { "id": 7, "name": "Cap", "price": 2000, "quantity": 1, "img": "/cap.png" },
+    { "id": 8, "name": "Sweatpants", "price": 8000, "quantity": 1, "img": "/sweatpants.png" },
+    { "id": 9, "name": "Hoodie", "price": 12000, "quantity": 1, "img": "/hoodie.png" },
+    { "id": 10, "name": "Scarf", "price": 3500, "quantity": 1, "img": "/scarf.png" }
   ]
 }

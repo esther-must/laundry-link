@@ -1,12 +1,12 @@
 import { create } from "zustand";
 
 const useStore = create((set, get) => ({
-  businesses: [], // Start with an empty list
+  businesses: [],
   bookings: [],
   userOrders: [],
   searchQuery: "",
   selectedCategory: "All",
-  sortOption: "name-asc", // Default sorting
+  sortOption: "name-asc",
   isLoading: false,
 
   setSearchQuery: (query) => set({ searchQuery: query }),
@@ -17,28 +17,30 @@ const useStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       const response = await fetch("http://localhost:5000/businesses");
+      if (!response.ok) throw new Error("Failed to fetch businesses");
       const data = await response.json();
       set({ businesses: data, isLoading: false });
     } catch (error) {
       console.error("Error fetching businesses:", error);
-      set({ businesses: [] });
+      set({ isLoading: false });
     }
   },
 
   fetchUserOrders: async () => {
     try {
-      const response = await fetch("http://localhost:5000/orders"); // Adjust endpoint as needed
+      const response = await fetch("http://localhost:5000/orders");
+      if (!response.ok) throw new Error("Failed to fetch orders");
       const data = await response.json();
       set({ userOrders: data });
     } catch (error) {
       console.error("Error fetching user orders:", error);
-      set({ userOrders: [] });
     }
   },
 
-  addUserOrder: (newOrder) => set((state) => ({
-    userOrders: [...state.userOrders, newOrder],
-  })),
+  addUserOrder: (newOrder) =>
+    set((state) => ({
+      userOrders: [...state.userOrders, newOrder],
+    })),
 
   addBooking: async (booking) => {
     try {
@@ -47,13 +49,13 @@ const useStore = create((set, get) => ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(booking),
       });
-      if (response.ok) {
-        const newBooking = await response.json();
-        set((state) => ({ bookings: [...state.bookings, newBooking] }));
-      }
+
+      if (!response.ok) throw new Error("Failed to add booking");
+
+      const newBooking = await response.json();
+      set((state) => ({ bookings: [...state.bookings, newBooking] }));
     } catch (error) {
       console.error("Error adding booking:", error);
-      set({ bookings: [] });
     }
   },
 
@@ -70,7 +72,6 @@ const useStore = create((set, get) => ({
       return matchesSearch && matchesCategory;
     });
 
-    // Sorting logic
     filtered.sort((a, b) => {
       if (sortOption === "name-asc") return a.name.localeCompare(b.name);
       if (sortOption === "name-desc") return b.name.localeCompare(a.name);
