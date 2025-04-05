@@ -63,9 +63,9 @@ const useStore = create((set, get) => ({
     const { businesses, searchQuery, selectedCategory, sortOption } = get();
 
     let filtered = businesses.filter((business) => {
-      const matchesSearch = business.name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+      const matchesSearch =
+        business.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        business.location.toLowerCase().includes(searchQuery.toLowerCase()); // Search by location as well
       const matchesCategory =
         selectedCategory === "All" || business.services.includes(selectedCategory);
 

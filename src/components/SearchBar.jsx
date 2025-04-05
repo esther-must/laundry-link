@@ -6,7 +6,7 @@ const SearchBar = () => {
   return (
     <input
       type="text"
-      placeholder="Search laundry services..."
+      placeholder="Search laundry services, locations..."
       value={searchQuery}
       onChange={(e) => {
         setSearchQuery(e.target.value);

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FiArrowLeft } from "react-icons/fi";
 import { useNavigate, useLocation } from "react-router-dom";
+import PaystackPayment from "../components/PaystackPayment";
 import BottomNav from "../components/BottomNav";
 
 const CheckoutScreen = () => {
@@ -14,14 +15,48 @@ const CheckoutScreen = () => {
   const deliveryFee = deliveryMethod === "pickup" ? 0 : 500;
   const totalCheckoutPrice = total + deliveryFee;
 
+  const handlePaymentSuccess = (response) => {
+    console.log("Payment successful:", response);
+  
+    const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
+  
+    const newOrder = {
+      orderId: response.reference,
+      businessName: location.state?.businessName,
+      totalPrice: totalCheckoutPrice,
+      paymentMethod,
+      deliveryMethod,
+      date: new Date().toLocaleString(),
+    };
+  
+    existingOrders.push(newOrder);
+    localStorage.setItem("orders", JSON.stringify(existingOrders));
+  
+    navigate("/order-success");
+  };  
+
   // Handle Confirm Order Click
   const handleConfirmOrder = () => {
+    const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
+  
+    const newOrder = {
+      orderId: new Date().getTime(),
+      businessName: location.state?.businessName,
+      totalPrice: totalCheckoutPrice,
+      paymentMethod,
+      deliveryMethod,
+      date: new Date().toLocaleString(),
+    };
+  
+    existingOrders.push(newOrder);
+    localStorage.setItem("orders", JSON.stringify(existingOrders));
+  
     if (paymentMethod === "card") {
-      navigate("/wallet", { state: { totalCheckoutPrice } }); // Redirect to wallet screen
+      navigate("/wallet", { state: { totalCheckoutPrice } });
     } else if (paymentMethod === "cod") {
-      navigate("/order-success"); // Redirect to order success screen
+      navigate("/order-success");
     }
-  };
+  };  
 
   return (
     <div className="p-4 md:p-6 bg-gray-100 min-h-screen">
@@ -64,6 +99,11 @@ const CheckoutScreen = () => {
             />
             <img src="../src/card.png" alt="Card" className="w-60 h-36 rounded" />
           </label>
+
+          {/* Paystack Payment Button */}
+          {paymentMethod === "card" && (
+            <PaystackPayment amount={totalCheckoutPrice * 100} email="user@example.com" onSuccess={handlePaymentSuccess} />
+          )}
 
           {/* Pay on Delivery */}
           <label className="flex items-center gap-2">

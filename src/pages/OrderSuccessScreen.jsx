@@ -1,8 +1,32 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiCheckCircle } from "react-icons/fi";
+import useStore from "../store/store";
 
 const OrderSuccessScreen = () => {
   const navigate = useNavigate();
+  const { addBooking } = useStore();
+
+  // Retrieve order details from localStorage (or any temporary state like sessionStorage)
+  const orderDetails = JSON.parse(localStorage.getItem("orderDetails")) || {};
+
+  useEffect(() => {
+    if (orderDetails) {
+      // Add the order to bookings
+      addBooking({
+        orderId: orderDetails.orderId,
+        businessName: orderDetails.businessName,
+        totalPrice: orderDetails.totalPrice,
+        paymentMethod: orderDetails.paymentMethod,
+        deliveryMethod: orderDetails.deliveryMethod,
+        status: "Confirmed",
+        date: new Date().toISOString(), // Add the current date
+      });
+
+      // Optionally clear order details after adding to bookings
+      localStorage.removeItem("orderDetails");
+    }
+  }, [orderDetails, addBooking]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">

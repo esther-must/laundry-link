@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { FiBell } from "react-icons/fi";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import useStore from "../store/store";
@@ -17,6 +18,14 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
+  const [notifications, setNotifications] = useState([
+    { id: 1, message: "Your order is ready for delivery!" },
+    { id: 2, message: "Your clothes are being washed." },
+  ]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+
   const demoOrders = {
     "Picked Up": [
       { id: 1, item: "5 Shirts & 2 Trousers", date: "March 24", eta: "March 27" },
@@ -32,10 +41,19 @@ const Home = () => {
     ]
   };
 
+  const [profilePic, setProfilePic] = useState("https://via.placeholder.com/50");
+
   useEffect(() => {
     fetchBusinesses();
     fetchUserOrders();
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => setUser(currentUser));
+
+    // Retrieve profilePic from localStorage on component mount
+    const storedProfilePic = localStorage.getItem('profilePic');
+    if (storedProfilePic) {
+      setProfilePic(storedProfilePic);
+    }
+
     return () => unsubscribe();
   }, []);
 
@@ -46,21 +64,46 @@ const Home = () => {
   return (
     <div className="p-4 md:p-6 max-w-6xl mx-auto bg-gray-50 min-h-screen">
       {/* USER GREETING */}
-      {user && (
-        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg rounded-lg p-5 md:p-6 mb-4 flex items-center gap-4 transition transform hover:scale-105">
-          <img
-            src={user.photoURL || "../default-avatar.png"}
-            alt="User Avatar"
-            className="w-14 h-14 md:w-20 md:h-20 rounded-full border-4 border-white"
-          />
-          <div>
-            <p className="text-lg md:text-2xl font-bold flex items-center">
-              Welcome back, {user.firstName || "User"}! <span className="ml-2 animate-wave">👋</span>
-            </p>
-            <p className="text-sm md:text-md opacity-90">Let’s track your laundry journey.</p>
-          </div>
+{user && (
+  <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg rounded-lg p-5 md:p-6 mb-4 flex items-center gap-4 transition transform hover:scale-105">
+    <img
+      src={profilePic}
+      alt="Profile"
+      className="w-14 h-14 md:w-20 md:h-20 rounded-full border-4 border-white"
+    />
+    <div>
+      <p className="text-lg md:text-2xl font-bold flex items-center">
+        Welcome back, {user.displayName ? user.displayName : user.email ? user.email.split('@')[0] : "User"}!
+      </p>
+      <p className="text-sm md:text-md opacity-90">Let’s track your laundry journey.</p>
+    </div>
+
+    {/* NOTIFICATION BUTTON */}
+    <div className="relative ml-auto">
+      <button onClick={toggleDropdown} className="relative p-2">
+        <FiBell size={24} className="text-white-700" />
+        {notifications.length > 0 && (
+          <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
+            {notifications.length}
+          </span>
+        )}
+      </button>
+
+      {isDropdownOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg p-3">
+          <ul>
+            {notifications.map((notification) => (
+              <li key={notification.id} className="text-sm text-gray-700 mb-2">
+                {notification.message}
+              </li>
+            ))}
+          </ul>
+          {notifications.length === 0 && <p className="text-xs text-gray-500">No new notifications</p>}
         </div>
       )}
+    </div>
+  </div>
+)}
 
       {/* ORDER TRACKING */}
       <div className="bg-white p-5 md:p-6 rounded-lg shadow-lg mb-6">

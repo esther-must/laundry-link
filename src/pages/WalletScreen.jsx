@@ -27,7 +27,7 @@ const WalletScreen = () => {
   };
 
   return (
-    <div className="p-4 md:p-6 bg-gray-100 min-h-screen">
+    <div className="p-4 md:p-6 bg-gray-100 min-h-screen max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between pb-4 border-b">
         <button onClick={() => navigate(-1)} className="text-blue-600 text-lg flex items-center gap-2">

@@ -13,6 +13,7 @@ import CheckoutScreen from "./pages/CheckoutScreen";
 import WalletScreen from "./pages/WalletScreen";
 import OrderSuccessScreen from "./pages/OrderSuccessScreen";
 import ProductsScreen from "./pages/ProductsScreen";
+import ProfileSettings from "./pages/ProfileSettings";
 
 function App() {
   // 🛒 Cart state (shared between ProductsScreen & OrderScreen)
@@ -51,6 +52,7 @@ function App() {
           <Route path="/checkout" element={<CheckoutScreen />} />
           <Route path="/wallet" element={<WalletScreen />} />
           <Route path="/order-success" element={<OrderSuccessScreen />} />
+          <Route path="/profile" element={<ProfileSettings />} />
           
           {/* ✅ Pass addToCart as a prop to ProductsScreen */}
           <Route path="/products" element={<ProductsScreen addToCart={addToCart} />} />
