@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { FiHome, FiPackage, FiUser, FiCreditCard } from "react-icons/fi"; // Import icons
-import path from "path";
 
 const BottomNav = () => {
   const navigate = useNavigate();
@@ -16,7 +15,7 @@ const BottomNav = () => {
   return (
     <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg p-3 flex justify-around border-t text-gray-600 text-xs md:text-sm">
       {navItems.map((tab, index) => {
-        const isActive = location.pathname === tab.path; // 🔹 STRICT MATCH
+        const isActive = location.pathname === tab.path; 
 
         return (
           <button
