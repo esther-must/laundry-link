@@ -19,7 +19,7 @@ Deployment: Netlify (Frontend), Render/Heroku (Backend)
 Clone the repository:
 
 ```sh
-git clone https://github.com/yourusername/laundrylink.git
+git clone https://github.com/esther-must/laundrylink.git
 cd laundrylink
 ```
 
