@@ -8,6 +8,7 @@ import SearchBar from "../components/SearchBar";
 import FilterOptions from "../components/FilterOptions";
 import SortOptions from "../components/SortOptions";
 import BottomNav from "../components/BottomNav";
+import defaultImg from '../assets/default-avatar.png';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -46,64 +47,94 @@ const Home = () => {
   useEffect(() => {
     fetchBusinesses();
     fetchUserOrders();
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => setUser(currentUser));
 
-    // Retrieve profilePic from localStorage on component mount
-    const storedProfilePic = localStorage.getItem('profilePic');
-    if (storedProfilePic) {
-      setProfilePic(storedProfilePic);
-    }
-
+    const savedTab = localStorage.getItem("activeTab");
+    if (savedTab) setActiveTab(savedTab);
+    
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      
+      if (currentUser) {
+        const storedProfilePic = localStorage.getItem('profilePic');
+        if (storedProfilePic) {
+          setProfilePic(storedProfilePic);
+        }
+      }
+    });
+  
     return () => unsubscribe();
-  }, []);
+  }, []);  
+
+  const handleTabClick = (status) => {
+    setActiveTab(status);
+    localStorage.setItem("activeTab", status);
+  };
 
   const filteredBusinesses = getFilteredBusinesses();
   const totalPages = Math.ceil(filteredBusinesses.length / itemsPerPage);
   const displayedBusinesses = filteredBusinesses.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  };  
+
   return (
     <div className="p-4 md:p-6 max-w-6xl mx-auto bg-gray-50 min-h-screen">
       {/* USER GREETING */}
-{user && (
-  <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg rounded-lg p-5 md:p-6 mb-4 flex items-center gap-4 transition transform hover:scale-105">
-    <img
-      src={profilePic}
-      alt="Profile"
-      className="w-14 h-14 md:w-20 md:h-20 rounded-full border-4 border-white"
-    />
-    <div>
-      <p className="text-lg md:text-2xl font-bold flex items-center">
-        Welcome back, {user.displayName ? user.displayName : user.email ? user.email.split('@')[0] : "User"}!
-      </p>
-      <p className="text-sm md:text-md opacity-90">Let’s track your laundry journey.</p>
-    </div>
+      {user && (
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg rounded-lg p-5 md:p-6 mb-4 flex items-center gap-4 transition transform hover:scale-105">
+          <div className="relative">
+            <img
+              src={profilePic}
+              onError={() => setProfilePic({defaultImg})}
+              alt="Profile"
+              className="w-14 h-14 md:w-20 md:h-20 rounded-full border-4 border-white"
+            />
+            <button
+              onClick={() => navigate("/profile")}
+              aria-label="Change profile picture"
+              className="absolute bottom-0 right-0 transform translate-x-1/4 translate-y-1/4 bg-white text-[10px] md:text-xs px-1.5 py-1 md:px-2 md:py-1.5 rounded-full shadow-md border border-gray-300 hover:bg-blue-500 hover:text-white transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              Change
+            </button>
 
-    {/* NOTIFICATION BUTTON */}
-    <div className="relative ml-auto">
-      <button onClick={toggleDropdown} className="relative p-2">
-        <FiBell size={24} className="text-white-700" />
-        {notifications.length > 0 && (
-          <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
-            {notifications.length}
-          </span>
-        )}
-      </button>
+          </div>
+          <div>
+            <p className="text-lg md:text-2xl font-bold flex items-center">
+              {getGreeting()}, {user.displayName ? user.displayName : user.email ? user.email.split('@')[0] : "User"}!
+            </p>
+            <p className="text-sm md:text-md opacity-90">Let’s track your laundry journey.</p>
+          </div>
 
-      {isDropdownOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg p-3">
-          <ul>
-            {notifications.map((notification) => (
-              <li key={notification.id} className="text-sm text-gray-700 mb-2">
-                {notification.message}
-              </li>
-            ))}
-          </ul>
-          {notifications.length === 0 && <p className="text-xs text-gray-500">No new notifications</p>}
+          {/* NOTIFICATION BUTTON */}
+          <div className="relative ml-auto">
+            <button onClick={toggleDropdown} className="relative p-2">
+              <FiBell size={24} className="text-white-700" />
+              {notifications.length > 0 && (
+                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
+                  {notifications.length}
+                </span>
+              )}
+            </button>
+
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg p-3">
+                <ul>
+                  {notifications.map((notification) => (
+                    <li key={notification.id} className="text-sm text-gray-700 mb-2">
+                      {notification.message}
+                    </li>
+                  ))}
+                </ul>
+                {notifications.length === 0 && <p className="text-xs text-gray-500">No new notifications</p>}
+              </div>
+            )}
+          </div>
         </div>
       )}
-    </div>
-  </div>
-)}
 
       {/* ORDER TRACKING */}
       <div className="bg-white p-5 md:p-6 rounded-lg shadow-lg mb-6">
@@ -116,7 +147,7 @@ const Home = () => {
               className={`px-4 py-2 rounded-full transition font-semibold ${
                 activeTab === status ? "bg-blue-500 text-white shadow-md" : "bg-gray-200 hover:bg-gray-300"
               }`}
-              onClick={() => setActiveTab(status)}
+              onClick={() => handleTabClick(status)}
             >
               {status}
             </button>
@@ -155,19 +186,25 @@ const Home = () => {
 
       {/* BUSINESS LISTINGS */}
       <div className="mt-8 bg-white p-5 md:p-6 rounded-lg shadow-lg">
-        <div className="flex flex-col md:flex-row items-center gap-3 md:gap-5 mb-4">
+        <div className="flex flex-col md:flex-row items-center gap-3 md:gap-5 mb-4 w-full flex-1">
           <SearchBar />
           <FilterOptions />
           <SortOptions />
         </div>
 
+        {isLoading ? (
+          <p className="text-center text-gray-500">Loading businesses...</p>
+        ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {displayedBusinesses.length > 0 ? (
-            displayedBusinesses.map((business) => <BusinessCard key={business.id} business={business} />)
-          ) : (
-            <p className="text-center col-span-full text-gray-500 text-sm md:text-md">No businesses found.</p>
-          )}
+            displayedBusinesses.map((business) => (
+            <BusinessCard key={business.id} business={business} />
+          ))
+        ) : (
+        <p className="text-center col-span-full text-gray-500 text-sm md:text-md">No businesses found.</p>
+        )}
         </div>
+      )}
 
         {/* PAGINATION */}
         <div className="flex justify-center mt-6 mb-12 space-x-3">

@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
+import washingMachineImg from '../assets/washing-machine.jpeg';
 
 const Onboarding = () => {
   return (
     <div className="h-screen flex flex-col justify-center items-center text-center bg-white text-blue-600">
-      <img src="../src/washing-machine.jpeg" alt="Laundry" className="w-80 h-80 mb-8" />
+      <img src={washingMachineImg} alt="Laundry" className="w-80 h-80 mb-8" />
       <h2 className="text-2xl font-normal">Laundry Made Easy, Fresh Clothes, Zero Hassle!</h2>
       <p className="mt-2 text-xl">
         Pickup, Wash, Iron, & Deliver – All at Your Fingertips.

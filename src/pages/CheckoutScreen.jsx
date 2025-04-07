@@ -3,6 +3,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import { useNavigate, useLocation } from "react-router-dom";
 import PaystackPayment from "../components/PaystackPayment";
 import BottomNav from "../components/BottomNav";
+import cardImg from '../assets/card.png';
 
 const CheckoutScreen = () => {
   const navigate = useNavigate();
@@ -97,7 +98,7 @@ const CheckoutScreen = () => {
               checked={paymentMethod === "card"}
               onChange={() => setPaymentMethod("card")}
             />
-            <img src="../src/card.png" alt="Card" className="w-60 h-36 rounded" />
+            <img src={cardImg} alt="Card" className="w-60 h-36 rounded" />
           </label>
 
           {/* Paystack Payment Button */}
